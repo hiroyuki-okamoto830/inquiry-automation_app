@@ -36,7 +36,7 @@ def display_select_mode():
     #    )
     with st.sidebar:
         st.markdown("## 利用目的")
-        purpose = st.radio("", ["社内文書検索", "社内問い合わせ"])
+        purpose = st.radio("利用目的", ["社内文書検索", "社内問い合わせ"], label_visibility="collapsed")
 
         st.markdown("---")
         st.markdown("**『社内文書検索』を選択した場合**")
