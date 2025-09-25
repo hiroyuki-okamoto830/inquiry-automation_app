@@ -8,7 +8,8 @@
 import os
 from dotenv import load_dotenv
 import streamlit as st
-from langchain.prompts import ChatPromptTemplate, MessagesPlaceholder
+#from langchain.prompts import ChatPromptTemplate, MessagesPlaceholder
+from langchain.prompts import ChatPromptTemplate, SystemMessagePromptTemplate, HumanMessagePromptTemplate, MessagesPlaceholder
 from langchain.schema import HumanMessage
 from langchain_openai import ChatOpenAI
 from langchain.chains import create_history_aware_retriever, create_retrieval_chain
@@ -76,11 +77,18 @@ def get_llm_response(chat_message):
     question_generator_template = ct.SYSTEM_PROMPT_CREATE_INDEPENDENT_TEXT
     question_generator_prompt = ChatPromptTemplate.from_messages(
         [
-            ("system", question_generator_template),
-            MessagesPlaceholder("chat_history"),
-            ("human", "{input}")
-        ]
+            SystemMessagePromptTemplate.from_template(question_generator_template),
+            MessagesPlaceholder(variable_name="chat_history"),
+            HumanMessagePromptTemplate.from_template("{input}")
+            ]
     )
+    #question_generator_prompt = ChatPromptTemplate.from_messages(
+    #    [
+    #        ("system", question_generator_template),
+    #        MessagesPlaceholder("chat_history"),
+    #        ("human", "{input}")
+    #    ]
+    #)
 
     # モードによってLLMから回答を取得する用のプロンプトを変更
     if st.session_state.mode == ct.ANSWER_MODE_1:
@@ -92,11 +100,18 @@ def get_llm_response(chat_message):
     # LLMから回答を取得する用のプロンプトテンプレートを作成
     question_answer_prompt = ChatPromptTemplate.from_messages(
         [
-            ("system", question_answer_template),
-            MessagesPlaceholder("chat_history"),
-            ("human", "{input}")
-        ]
+            SystemMessagePromptTemplate.from_template(question_answer_template),
+            MessagesPlaceholder(variable_name="chat_history"),
+            HumanMessagePromptTemplate.from_template("{input}")
+            ]
     )
+    #question_answer_prompt = ChatPromptTemplate.from_messages(
+    #    [
+    #        ("system", question_answer_template),
+    #        MessagesPlaceholder("chat_history"),
+    #        ("human", "{input}")
+    #    ]
+    #)
 
     # 会話履歴なしでもLLMに理解してもらえる、独立した入力テキストを取得するためのRetrieverを作成
     history_aware_retriever = create_history_aware_retriever(
