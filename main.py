@@ -95,7 +95,7 @@ if chat_message:
     # 7-1. ユーザーメッセージの表示
     # ==========================================
     # ユーザーメッセージのログ出力
-    logger.info({"message": chat_message, "application_mode": st.session_state.mode})
+    logger.info({"message": chat_message, "application_mode": st.session_state.get("mode", "default")}) #修正
 
     # ユーザーメッセージを表示
     with st.chat_message("user"):
