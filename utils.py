@@ -130,7 +130,7 @@ def get_llm_response(chat_message):
     answer_text = llm_response.get("answer") or llm_response.get("output_text")
     
     # LLMレスポンスを会話履歴に追加
-    st.session_state.chat_history.extend([HumanMessage(content=chat_message), AIMessage(content=llm_response["answer_text"])])
+    st.session_state.chat_history.extend([HumanMessage(content=chat_message), AIMessage(content=answer_text)])
     #st.session_state.chat_history.extend([HumanMessage(content=chat_message), llm_response["answer"]])
 
     return llm_response
