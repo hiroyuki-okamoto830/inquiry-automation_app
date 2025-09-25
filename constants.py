@@ -25,8 +25,8 @@ LINK_SOURCE_ICON = ":material/link: "
 WARNING_ICON = ":material/warning:"
 ERROR_ICON = ":material/error:"
 SPINNER_TEXT = "回答生成中..."
-WARNING_ICON = ":material/warning:" # 追加：警告アイコン
-
+#WARNING_ICON = ":material/warning:" # 追加：警告アイコン
+WARNING_ICON = "⚠️" # 追加：警告アイコン
 
 # ==========================================
 # ログ出力系
