@@ -127,10 +127,14 @@ def get_llm_response(chat_message):
     llm_response = chain.invoke({"input": chat_message, "chat_history": st.session_state.chat_history})
 
     # レスポンスキーを安全に参照
-    answer_text = llm_response.get("answer") or llm_response.get("output_text")
+    answer_text = llm_response.get("answer") or llm_response.get("output_text") or ""
     
     # LLMレスポンスを会話履歴に追加
     st.session_state.chat_history.extend([HumanMessage(content=chat_message), AIMessage(content=answer_text)])
     #st.session_state.chat_history.extend([HumanMessage(content=chat_message), llm_response["answer"]])
 
-    return llm_response
+    return {
+        "answer": answer_text,
+        "context": raw_response.get("context", []),
+        "raw": raw_response  # デバッグ用に元レスポンスも返す
+    }
