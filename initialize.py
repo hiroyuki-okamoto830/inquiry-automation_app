@@ -20,7 +20,9 @@ from langchain_openai import OpenAIEmbeddings
 from langchain_community.vectorstores import Chroma
 import constants as ct
 from langchain_community.document_loaders import PyMuPDFLoader, Docx2txtLoader, TextLoader
-#from langchain.document_loaders import PyPDFLoader
+# from langchain.document_loaders import PyPDFLoader
+# 野中追加：実際に呼び出しているのはPyPDFLoaderなので、↓はコメント外してください
+from langchain_community.document_loaders import PyPDFLoader
 
 
 ############################################################
@@ -150,6 +152,12 @@ def initialize_session_state():
         # 「LLMとのやりとり用」の会話ログを順次格納するリストを用意
         st.session_state.chat_history = []
 
+    # 野中追加：回答モードの既定値を必ず用意（main.py で参照する前に作る）
+    if "mode" not in st.session_state:
+        st.session_state.mode = ct.ANSWER_MODE_1
+    if "raw_response" not in st.session_state:
+        st.session_state.raw_response = None
+        
 
 def load_data_sources():
     """
@@ -220,6 +228,8 @@ def file_load(path, docs_all):
             # PDFファイルの場合はPyPDFLoaderを使用してページ情報を保持
             loader = PyPDFLoader(path)
             docs = loader.load_and_split() # metadata["page"] が付与される
+            # 野中追加：これが必要です
+            docs_all.extend(docs)
         else:
             # ファイルの拡張子に合ったdata loaderを使ってデータ読み込み
             loader = ct.SUPPORTED_EXTENSIONS[file_extension](path)
@@ -249,3 +259,4 @@ def adjust_string(s):
     
     # OSがWindows以外の場合はそのまま返す
     return s
+
