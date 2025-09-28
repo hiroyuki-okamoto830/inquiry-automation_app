@@ -133,8 +133,9 @@ def get_llm_response(chat_message):
     st.session_state.chat_history.extend([HumanMessage(content=chat_message), AIMessage(content=answer_text)])
     #st.session_state.chat_history.extend([HumanMessage(content=chat_message), llm_response["answer"]])
 
+    # 野中：raw_responseが呼び出されているため、参照落ちしないようにここで代入しておく
     return {
         "answer": answer_text,
-        "context": raw_response.get("context", []),
-        "raw": raw_response  # デバッグ用に元レスポンスも返す
+        "context": llm_response.get("context", []),  # ← 実在する変数に
+        "raw": llm_response                           # ← 同上
     }
