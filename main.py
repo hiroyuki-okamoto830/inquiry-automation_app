@@ -1,33 +1,38 @@
+# 野中：応急処置
+raw_response = None
+
 """
 このファイルは、Webアプリのメイン処理が記述されたファイルです。
 """
 
 ############################################################
-# 1. ライブラリの読み込み
+# 1. ライブラリの読み込み（野中：順番変えました）
 ############################################################
-# 「.env」ファイルから環境変数を読み込むための関数
-from dotenv import load_dotenv
-# ログ出力を行うためのモジュール
-import logging
-# streamlitアプリの表示を担当するモジュール
 import streamlit as st
-# （自作）画面表示以外の様々な関数が定義されているモジュール
+from streamlit.errors import StreamlitSetPageConfigMustBeFirstCommandError
+
+# ★ 最初の Streamlit コマンド。順序/重複のエラーは握りつぶして続行
+try:
+    st.set_page_config(page_title="Inquiry Automation", layout="wide")
+except StreamlitSetPageConfigMustBeFirstCommandError:
+    pass
+
+# ここから下で他モジュールを import（この順序が超重要）
+from dotenv import load_dotenv
+import logging
 import utils
-# （自作）アプリ起動時に実行される初期化処理が記述された関数
 from initialize import initialize
-# （自作）画面表示系の関数が定義されているモジュール
 import components as cn
-# （自作）変数（定数）がまとめて定義・管理されているモジュール
 import constants as ct
 
 
 ############################################################
 # 2. 設定関連
 ############################################################
-# ブラウザタブの表示文言を設定
-st.set_page_config(
-    page_title=ct.APP_NAME
-)
+# ブラウザタブの表示文言を設定　→　野中：上に移動しました
+# st.set_page_config(
+#     page_title=ct.APP_NAME
+# )
 
 # ログ出力を行うためのロガーの設定
 logger = logging.getLogger(ct.LOGGER_NAME)
@@ -111,6 +116,9 @@ if chat_message:
         try:
             # 画面読み込み時に作成したRetrieverを使い、Chainを実行
             llm_response = utils.get_llm_response(chat_message)
+            # 野中追加：raw_responseが呼び出されているため、参照落ちしないようにここで代入しておく
+            st.session_state.raw_response = llm_response
+
         except Exception as e:
             # エラーログの出力
             logger.error(f"{ct.GET_LLM_RESPONSE_ERROR_MESSAGE}\n{e}")
