@@ -34,9 +34,18 @@ def display_select_mode():
     #        options=[ct.ANSWER_MODE_1, ct.ANSWER_MODE_2],
     #        label_visibility="collapsed"
     #    )
+
+    # 野中修正
     with st.sidebar:
         st.markdown("## 利用目的")
-        purpose = st.radio("利用目的", ["社内文書検索", "社内問い合わせ"], label_visibility="collapsed")
+
+        # ★ポイント：key="mode" で session_state に保存する（メインはこれを参照）
+        st.radio(
+            label="利用目的",
+            options=[ct.ANSWER_MODE_1, ct.ANSWER_MODE_2],
+            key="mode",
+            label_visibility="collapsed",
+        )
 
         st.markdown("---")
         st.markdown("**『社内文書検索』を選択した場合**")
@@ -339,3 +348,4 @@ def display_contact_llm_response(llm_response):
         content["file_info_list"] = file_info_list
 
     return content
+
